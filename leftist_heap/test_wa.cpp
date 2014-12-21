@@ -1,8 +1,12 @@
-#include "leftist_heap_bootstraped.h"
+#include "leftist_heap.h"
+
+#include <cassert>
+#include <climits>
+
 
 #define forn(i, n) for (int i = 0; i < (int)(n); i++)
 
-void gen( int n, vector <int> &a ) {
+void gen( int n, std::vector <int> &a ) {
   a.resize(n);
   forn(i, n)
     a[i] = rand() % 100;

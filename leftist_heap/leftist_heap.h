@@ -1,6 +1,7 @@
-#include <bits/stdc++.h>
+#include <vector>
+#include <algorithm>
+#include <iostream>
 
-using namespace std;
 
 template <class T>
 struct LNode {
@@ -41,7 +42,7 @@ struct LHeap {
 	template <class POINTER>
 	void build(int an, POINTER a ) { // O(n)
 		clear();							//не очень элегантно, но хотелось обойтись без добавления в каждый узел инфы о его связях с родителем.
-		vector<LNode<T> *> ptrs(an+1, 0);
+		std::vector<LNode<T> *> ptrs(an+1, 0);
 		for (int i = 0; i < an; i++){
 			ptrs[i] = new LNode<T>(*a++);
 		}
@@ -53,7 +54,7 @@ struct LHeap {
 				if (r <= an && ptrs[r] && ptrs[r]->val < ptrs[m]->val) m = r;
 				if (m == j)
 					break;
-				swap(ptrs[m], ptrs[j]);
+				std::swap(ptrs[m], ptrs[j]);
 				j = m;
 			}
 		}
@@ -82,7 +83,7 @@ struct LHeap {
 	// 		if(n->R && n->R->val < n->val) smaller = n->R;
 	// 		if(smaller == n)
 	// 			break;
-	// 		swap(n->val, smaller->val);
+	// 		std::swap(n->val, smaller->val);
 	// 		n = smaller;
 	// 	}
 	// }
@@ -106,13 +107,13 @@ struct LHeap {
 			return b;
 		}
 		if(a->val > b->val)
-			swap(a, b);
+			std::swap(a, b);
 		if(!a->R)
 			a->R = b;
 		else 
 			a->R = merge (a->R, b);
 		if(!a->L || a->R->d > a->L->d)
-			swap(a->R, a->L);
+			std::swap(a->R, a->L);
 		a->d = a->R ? a->R->d + 1 : 1;
 		return a;
 	}
