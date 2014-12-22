@@ -20,7 +20,7 @@ int main() {
   forn(t, 10) { // number of tests
     // test extractMin
     gen(n, x);
-    h.build(n, x.begin());
+    h.build(x.begin(), x.end());
     forn(i, n)
       h.extractMin();
     // test add

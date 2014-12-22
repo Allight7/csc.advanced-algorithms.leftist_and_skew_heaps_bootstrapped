@@ -1,11 +1,13 @@
-#include "leftist_heap_bootstraped.h"
-// #include <algorithm>
-// #include <assert.h>
+#include "leftist_heap_bootstrapped.h"
+ 
+ #include <vector>
+ #include <cassert>
+ #include <climits>
 
 
 #define forn(i, n) for (int i = 0; i < (int)(n); i++)
 
-void gen( int n, vector <int> &a ) {
+void gen( int n, std::vector <int> &a ) {
   a.resize(n);
   forn(i, n)
     a[i] = rand() % 100;
@@ -18,15 +20,17 @@ int main() {
   ns[0]=3;  ns[1]=5;  ns[2]=10; ns[3]=20;
   for (auto n : ns) // size of test
     forn(t, 10000) { // number of tests
-      gen(n, x);
+
       // test build + extract
-      h.build(n, x.begin());
+      gen(n, x);
+      h.build(x.begin(),x.end());
       forn(i, n) {
         auto it = min_element(x.begin(), x.end());
         assert(h.extractMin() == *it);
         x.erase(it);
       }
-      // test add + extract + min
+      
+	  // test add + extract + min
       gen(n, x);
       forn(i, n)
         h.add(x[i]);

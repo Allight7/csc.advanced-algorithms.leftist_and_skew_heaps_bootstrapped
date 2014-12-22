@@ -16,7 +16,7 @@ void gen( int n, std::vector <int> &a ) {
     a[i] = R();
 }
 
-const int maxN = 1e7;
+const int maxN = 1e5;
 // LHeap<unsigned, INT_MAX> h;
 
 
@@ -69,8 +69,7 @@ int main() {
   timeStamp("leftist_heap2 \tbuilded: \t%.2f\n");
 //  std::cout << h1.root->d << std::endl; 
 //  std::cout << h2.root->d << std::endl;
-  h1.root = h1.merge(h1.root, h2.root);
-  h2.root = 0;
+  h1.mergeWithHeap(h2);
 //  std::cout << h1.root->d<< std::endl;
   timeStamp("leftist_heaps \tmerged: \t%.10f\n");
 

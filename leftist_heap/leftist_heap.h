@@ -22,36 +22,42 @@ struct LNode {
 };
 
 template <class T, const T INF>
-struct LHeap {
+class LHeap {
 	LNode<T> * root;
 
-	
+public:
+
 	LHeap() {
 		root = 0;
 	}
 
-	LHeap( int n, T *a ) { 
+	template <class InputIterator>
+	LHeap(InputIterator first, InputIterator last) { 
 		root = 0;
-		build(n, a); 
+		build(first, last); 
 	}
 
 	~LHeap() { 
 		clear(); 
 	}
 
-	template <class POINTER>
-	void build(int an, POINTER a ) { // O(n)
+	template <class InputIterator>
+	void build(InputIterator first, InputIterator last) { // O(n)
 		clear();							//не очень элегантно, но хотелось обойтись без добавления в каждый узел инфы о его связях с родителем.
-		std::vector<LNode<T> *> ptrs(an+1, 0);
-		for (int i = 0; i < an; i++){
-			ptrs[i] = new LNode<T>(*a++);
-		}
-		for(int i = an/2; i >= 0; i--){
+		std::vector<LNode<T> *> ptrs;
+
+		while(first != last)
+			ptrs.push_back(new LNode<T>(*first++));
+		int size = ptrs.size();
+		ptrs.resize(size+1);
+		
+		
+		for(int i = size/2; i >= 0; i--){
 			int j = i;
-			while (j < an && ptrs[j]) {
+			while (j < size && ptrs[j]) {
 				int m = j, l = 2 * j + 1, r = l + 1;
-				if (l <= an && ptrs[l] && ptrs[l]->val < ptrs[m]->val) m = l;
-				if (r <= an && ptrs[r] && ptrs[r]->val < ptrs[m]->val) m = r;
+				if (l <= size && ptrs[l] && ptrs[l]->val < ptrs[m]->val) m = l;
+				if (r <= size && ptrs[r] && ptrs[r]->val < ptrs[m]->val) m = r;
 				if (m == j)
 					break;
 				std::swap(ptrs[m], ptrs[j]);
@@ -60,62 +66,21 @@ struct LHeap {
 		}
 
 		root = ptrs[0];
-		for(int i = 0; i < an/2; ++i){
+		for(int i = 0; i < size/2; ++i){
 			ptrs[i]->L = ptrs[2*i+1];
 			ptrs[i]->R = ptrs[2*i+2];
 		}
 		dRecount(root);
 	}
 
-	int dRecount(LNode<T>* n)
-	{
-		if(!n)
-			return 0;
-		if(!n->R || !n->L)
-			return n->d = 1;
-		return n->d = std::min(dRecount(n->L), dRecount(n->R)) + 1;
-	}
-
-	// void down(LNode<T> * n) {
-	// 	LNode<T> * smaller = n;
-	// 	while(n->L || n->R){
-	// 		if(n->L && n->L->val < n->val) smaller = n->L;
-	// 		if(n->R && n->R->val < n->val) smaller = n->R;
-	// 		if(smaller == n)
-	// 			break;
-	// 		std::swap(n->val, smaller->val);
-	// 		n = smaller;
-	// 	}
-	// }
-
 	void clear() {
 		if(root)
 			clear(root);
 	}
 
-	void clear(LNode<T> * n) {
-		if(n->L) clear(n->L);
-		if(n->R) clear(n->R);
-		delete n;
-	}
-
-	LNode<T> * merge (LNode<T> * a, LNode<T> * b) {  // returns pointer to the head of merged heap
-													 // if only one of nodes NOTNULL, returns it
-		if(!a || !b || a == b){
-			if(a && !b) return a;
-			if(a == b && a != 0) throw "NullPointerException";
-			return b;
-		}
-		if(a->val > b->val)
-			std::swap(a, b);
-		if(!a->R)
-			a->R = b;
-		else 
-			a->R = merge (a->R, b);
-		if(!a->L || a->R->d > a->L->d)
-			std::swap(a->R, a->L);
-		a->d = a->R ? a->R->d + 1 : 1;
-		return a;
+	void mergeWithHeap(LHeap<T,INF>& h){
+		root = merge(root, h.root);
+		h.root = 0;
 	}
 
 	void add (T val) {
@@ -139,7 +104,36 @@ struct LHeap {
 		return oldMin;
 	}
 
-	void printSubtree(LNode<T>* n, int level) {
+	void print() {
+		printSubtree(root,1);
+	}
+
+	bool checkMin(){
+		checkMin(root);
+	}
+
+private:
+
+	LNode<T> * merge (LNode<T> * a, LNode<T> * b) {  // returns pointer to the head of merged heap
+													 // if only one of nodes NOTNULL, returns it
+		if(!a || !b || a == b){
+			if(a && !b) return a;
+			if(a == b && a != 0) throw "NullPointerException";
+			return b;
+		}
+		if(a->val > b->val)
+			std::swap(a, b);
+		if(!a->R)
+			a->R = b;
+		else 
+			a->R = merge (a->R, b);
+		if(!a->L || a->R->d > a->L->d)
+			std::swap(a->R, a->L);
+		a->d = a->R ? a->R->d + 1 : 1;
+		return a;
+	}
+
+		void printSubtree(LNode<T>* n, int level) {
 		std::cout << std::string(level, ' ') << (n? n->val : 0) << ':' << (n? n->d : 0) << std::endl;
 		if(!n)
 			return;
@@ -151,5 +145,20 @@ struct LHeap {
 		if(!n) throw "NullPointerException";
 		return (n->L ? (n->val <= n->L->val && checkMin(n->L)) : true) &&
 				(n->R ? (n->val <= n->R->val && checkMin(n->R)) : true);
+	}
+	
+	void clear(LNode<T> * n) {
+		if(n->L) clear(n->L);
+		if(n->R) clear(n->R);
+		delete n;
+	}
+	
+	int dRecount(LNode<T>* n)
+	{
+		if(!n)
+			return 0;
+		if(!n->R || !n->L)
+			return n->d = 1;
+		return n->d = std::min(dRecount(n->L), dRecount(n->R)) + 1;
 	}
 };

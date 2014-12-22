@@ -21,7 +21,7 @@ int main() {
     forn(t, 10000) { // number of tests
       gen(n, x);
       // test build + extract
-      h.build(n, x.begin());
+      h.build(x.begin(), x.end());
       forn(i, n) {
         auto it = min_element(x.begin(), x.end());
         assert(h.extractMin() == *it);
