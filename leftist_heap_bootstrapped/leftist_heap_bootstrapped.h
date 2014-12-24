@@ -84,7 +84,7 @@ public:
 	}
 
 	bool checkMin(){
-		checkMin(root);
+		return checkMin(root);
 	}
 
 	void clear() {
