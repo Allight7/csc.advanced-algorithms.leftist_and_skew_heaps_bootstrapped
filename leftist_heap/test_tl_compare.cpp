@@ -17,7 +17,7 @@ void gen( int n, std::vector <int> &a ) {
 }
 
 const int maxN = 1e5;
-// LHeap<unsigned, INT_MAX> h;
+// LHeapBoot<unsigned, &i_max> h;
 
 
 double start = 0;
@@ -59,7 +59,7 @@ int main() {
   gen(n, x2);
   timeStamp("input2 is generated: %.2f\n");
 
-  LHeap<unsigned, INT_MAX> h1,h2;
+  LHeap<unsigned> h1,h2;
   forn(i, n)
     h1.add(x1[i]);
   timeStamp("leftist_heap1 \tbuilded: \t%.2f\n");
@@ -71,7 +71,11 @@ int main() {
 //  std::cout << h2.root->d << std::endl;
   h1.mergeWithHeap(h2);
 //  std::cout << h1.root->d<< std::endl;
-  timeStamp("leftist_heaps \tmerged: \t%.10f\n");
+  timeStamp("leftist_heaps \tmerged: \t%.2f\n");
+  h1.pop();
+  timeStamp("leftist_heap1 \tfirst access: \t%.2f\n");
+  h1.pop();
+  timeStamp("leftist_heap1 \tsecond access: \t%.2f\n");
 
 
   std::priority_queue<int, std::vector<int>, std::greater<int>> q1;

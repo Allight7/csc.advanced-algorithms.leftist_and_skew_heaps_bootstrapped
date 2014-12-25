@@ -10,10 +10,6 @@ struct LNode {
 	LNode <T> * L;
 	LNode <T> * R;
 
-	LNode() {
-		d = 0;
-		L = R = 0;
-	}
 	LNode(T _val) { 
 		d = 1; 
 		val = _val; 
@@ -21,8 +17,9 @@ struct LNode {
 	}
 };
 
-template <class T, const T INF>
+template <class T>
 class LHeap {
+	friend class LeftistHeapMergeBootInt;
 	LNode<T> * root;
 
 public:
@@ -73,14 +70,23 @@ public:
 		dRecount(root);
 	}
 
+	void mergeWithHeap(LHeap<T>& h){
+		root = merge(root, h.root);
+		h.root = 0;
+	}
+
+	void print() {
+		printSubtree(root,1);
+	}
+
+	bool checkMin(){
+		return checkMin(root);
+	}
+
 	void clear() {
 		if(root)
 			clear(root);
-	}
-
-	void mergeWithHeap(LHeap<T,INF>& h){
-		root = merge(root, h.root);
-		h.root = 0;
+		root = nullptr;
 	}
 
 	void add (T val) {
@@ -91,34 +97,42 @@ public:
 	}
 
 	T min (){
-		return root ? root->val : INF;
+		return root->val;
 	}
 
-	T extractMin (){
-		if(!root)
-			return INF;
-		T oldMin = root->val;
+	void pop(){
 		LNode<T> * oldRoot = root;
 		root = merge(oldRoot->L, oldRoot->R);
 		delete oldRoot;
-		return oldMin;
 	}
 
-	void print() {
-		printSubtree(root,1);
+	bool empty() {
+		return root == nullptr;
 	}
 
-	bool checkMin(){
-		checkMin(root);
-	}
 
 private:
+
+		int dRecount(LNode<T>* n)
+	{
+		if(!n)
+			return 0;
+		if(!n->R || !n->L)
+			return n->d = 1;
+		return n->d = std::min(dRecount(n->L), dRecount(n->R)) + 1;
+	}
+
+	void clear(LNode<T> * n) {
+		if(n->L) clear(n->L);
+		if(n->R) clear(n->R);
+		delete n;
+	}
 
 	LNode<T> * merge (LNode<T> * a, LNode<T> * b) {  // returns pointer to the head of merged heap
 													 // if only one of nodes NOTNULL, returns it
 		if(!a || !b || a == b){
 			if(a && !b) return a;
-			if(a == b && a != 0) throw "NullPointerException";
+			if(a == b && a != 0) throw "attempt of self merge";
 			return b;
 		}
 		if(a->val > b->val)
@@ -133,12 +147,14 @@ private:
 		return a;
 	}
 
-		void printSubtree(LNode<T>* n, int level) {
-		std::cout << std::string(level, ' ') << (n? n->val : 0) << ':' << (n? n->d : 0) << std::endl;
+	void printSubtree(LNode<T>* n, int level) {
 		if(!n)
-			return;
-		printSubtree(n->L, level+1);
-		printSubtree(n->R, level+1);
+			std::cout << std::string(level, ' ') << "-:" << (n? n->d : 0) << std::endl;
+		else{
+			printSubtree(n->R, level+1);
+			std::cout << std::string(level, ' ') << (n? n->val : 0) << ':' << (n? n->d : 0) << std::endl;
+			printSubtree(n->L, level+1);
+		}
 	}
 
 	bool checkMin(LNode<T>* n){
@@ -146,19 +162,6 @@ private:
 		return (n->L ? (n->val <= n->L->val && checkMin(n->L)) : true) &&
 				(n->R ? (n->val <= n->R->val && checkMin(n->R)) : true);
 	}
-	
-	void clear(LNode<T> * n) {
-		if(n->L) clear(n->L);
-		if(n->R) clear(n->R);
-		delete n;
-	}
-	
-	int dRecount(LNode<T>* n)
-	{
-		if(!n)
-			return 0;
-		if(!n->R || !n->L)
-			return n->d = 1;
-		return n->d = std::min(dRecount(n->L), dRecount(n->R)) + 1;
-	}
+
+
 };

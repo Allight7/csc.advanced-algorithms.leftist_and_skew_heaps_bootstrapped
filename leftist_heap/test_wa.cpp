@@ -1,7 +1,8 @@
 #include "leftist_heap.h"
-
-#include <cassert>
-#include <climits>
+ 
+ #include <vector>
+ #include <cassert>
+ #include <climits>
 
 
 #define forn(i, n) for (int i = 0; i < (int)(n); i++)
@@ -12,29 +13,32 @@ void gen( int n, std::vector <int> &a ) {
     a[i] = rand() % 100;
 }
 
-LHeap<int, INT_MAX> h;
+LHeap<int> h;
 
 int main() {
   std::vector <int> x, ns(4);
   ns[0]=3;  ns[1]=5;  ns[2]=10; ns[3]=20;
   for (auto n : ns) // size of test
     forn(t, 10000) { // number of tests
+
+      // test build + min
       gen(n, x);
-      // test build + extract
-      h.build(x.begin(), x.end());
+      h.build(x.begin(),x.end());
       forn(i, n) {
         auto it = min_element(x.begin(), x.end());
-        assert(h.extractMin() == *it);
+        assert(h.min() == *it);
+        h.pop();
         x.erase(it);
       }
-      // test add + extract + min
+      
+	  // test add + min
       gen(n, x);
       forn(i, n)
         h.add(x[i]);
       forn(i, n) {
         auto it = min_element(x.begin(), x.end());
         assert(h.min() == *it);
-        assert(h.extractMin() == *it);
+        h.pop();
         x.erase(it);
       }
     }
