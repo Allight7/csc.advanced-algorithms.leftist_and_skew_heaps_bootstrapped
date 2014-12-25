@@ -10,10 +10,6 @@ struct LNode {
 	LNode <T> * L;
 	LNode <T> * R;
 
-	LNode() {
-		d = 0;
-		L = R = 0;
-	}
 	LNode(T _val) { 
 		d = 1; 
 		val = _val; 
@@ -21,8 +17,9 @@ struct LNode {
 	}
 };
 
-template <class T, const T INF>
+template <class T>
 class LHeapBoot {
+	friend class LeftistHeapMergeBootInt;
 	LNode<T> * root;
 	std::list<T> addition;
 	
@@ -73,17 +70,19 @@ public:
 		dRecount(root);
 	}
 
-	void mergeWithHeap(LHeapBoot<T,INF>& h){
+	void mergeWithHeap(LHeapBoot<T>& h){
 		addition.splice(addition.end(), h.addition);
 		root = merge(root, h.root);
 		h.root = 0;
 	}
 
 	void print() {
+		mergeAddition();
 		printSubtree(root,1);
 	}
 
 	bool checkMin(){
+		mergeAddition();
 		return checkMin(root);
 	}
 
@@ -91,6 +90,7 @@ public:
 		addition.clear();
 		if(root)
 			clear(root);
+		root = nullptr;
 	}
 
 	void add (T val) {
@@ -106,19 +106,19 @@ public:
 	}
 
 	T min (){
-		return root ? root->val : INF;
+		return root->val;
 	}
 
-	T extractMin (){
-		if(!root)
-			return INF;
+	void pop(){
 		if(!addition.empty())
 			mergeAddition();
-		T oldMin = root->val;
 		LNode<T> * oldRoot = root;
 		root = merge(oldRoot->L, oldRoot->R);
 		delete oldRoot;
-		return oldMin;
+	}
+
+	bool empty() {
+		return root == nullptr;
 	}
 
 
@@ -145,7 +145,7 @@ private:
 //			mergeAddition();
 		if(!a || !b || a == b){
 			if(a && !b) return a;
-			if(a == b && a != 0) throw "NullPointerException";
+			if(a == b && a != 0) throw "attempt of self merge";
 			return b;
 		}
 		if(a->val > b->val)
@@ -161,18 +161,20 @@ private:
 	}
 
 	void mergeAddition(){
-		LHeapBoot<T,INF> h(addition.begin(), addition.end());
+		LHeapBoot<T> h(addition.begin(), addition.end());
 		addition.clear();
 		root = merge(root, h.root);
 		h.root = 0;
 	}
 
 	void printSubtree(LNode<T>* n, int level) {
-		std::cout << std::string(level, ' ') << (n? n->val : 0) << ':' << (n? n->d : 0) << std::endl;
 		if(!n)
-			return;
-		printSubtree(n->L, level+1);
-		printSubtree(n->R, level+1);
+			std::cout << std::string(level, ' ') << "-:" << (n? n->d : 0) << std::endl;
+		else{
+			printSubtree(n->R, level+1);
+			std::cout << std::string(level, ' ') << (n? n->val : 0) << ':' << (n? n->d : 0) << std::endl;
+			printSubtree(n->L, level+1);
+		}
 	}
 
 	bool checkMin(LNode<T>* n){

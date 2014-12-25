@@ -13,7 +13,7 @@ void gen( int n, std::vector <int> &a ) {
     a[i] = rand() % 100;
 }
 
-LHeapBoot<int, INT_MAX> h;
+LHeapBoot<int> h;
 
 int main() {
   std::vector <int> x, ns(4);
@@ -21,23 +21,24 @@ int main() {
   for (auto n : ns) // size of test
     forn(t, 10000) { // number of tests
 
-      // test build + extract
+      // test build + min
       gen(n, x);
       h.build(x.begin(),x.end());
       forn(i, n) {
         auto it = min_element(x.begin(), x.end());
-        assert(h.extractMin() == *it);
+        assert(h.min() == *it);
+        h.pop();
         x.erase(it);
       }
       
-	  // test add + extract + min
+	  // test add + min
       gen(n, x);
       forn(i, n)
         h.add(x[i]);
       forn(i, n) {
         auto it = min_element(x.begin(), x.end());
         assert(h.min() == *it);
-        assert(h.extractMin() == *it);
+        h.pop();
         x.erase(it);
       }
     }

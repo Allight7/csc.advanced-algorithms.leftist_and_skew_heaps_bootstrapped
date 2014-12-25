@@ -12,7 +12,7 @@ void gen( int n, std::vector <int> &a ) {
 }
 
 const int maxN = static_cast<int>(1e5);
-LHeapBoot<int, INT_MAX> h;
+LHeapBoot<int> h;
 
 int main() {
   std::vector <int> x;
@@ -22,7 +22,7 @@ int main() {
     gen(n, x);
     h.build(x.begin(), x.end());
     forn(i, n)
-      h.extractMin();
+      h.pop();
     // test add
     gen(n, x);
     h.clear();
