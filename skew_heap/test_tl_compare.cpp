@@ -17,7 +17,7 @@ void gen( int n, std::vector <int> &a ) {
 }
 
 const int maxN = 1e5;
-// SHeap<unsigned, INT_MAX> h;
+// LHeapBoot<unsigned, &i_max> h;
 
 
 double start = 0;
@@ -59,7 +59,7 @@ int main() {
   gen(n, x2);
   timeStamp("input2 is generated: %.2f\n");
 
-  SHeap<unsigned, INT_MAX> h1,h2;
+  SHeap<unsigned> h1,h2;
   forn(i, n)
     h1.add(x1[i]);
   timeStamp("leftist_heap1 \tbuilded: \t%.2f\n");
@@ -71,10 +71,10 @@ int main() {
 //  std::cout << h2.root->d << std::endl;
   h1.mergeWithHeap(h2);
 //  std::cout << h1.root->d<< std::endl;
-  timeStamp("leftist_heaps \tmerged: \t%.10f\n");
-  h1.extractMin();
+  timeStamp("leftist_heaps \tmerged: \t%.2f\n");
+  h1.pop();
   timeStamp("leftist_heap1 \tfirst access: \t%.2f\n");
-  h1.extractMin();
+  h1.pop();
   timeStamp("leftist_heap1 \tsecond access: \t%.2f\n");
 
 
@@ -91,10 +91,6 @@ int main() {
     q2.pop();
   }
   timeStamp("priority_queues\tmerged: \t%.2f\n");
-  q1.top(); q1.pop(); 
-  timeStamp("priority_queue1 \tfirst access: \t%.2f\n");
-  q1.top(); q1.pop(); 
-  timeStamp("priority_queue1 \tsecond access: \t%.2f\n");
 
   std::multiset<int> s1;
   forn(i, n)
@@ -109,9 +105,4 @@ int main() {
     s2.erase(s2.begin());
   }
   timeStamp("sets \t\tmerged: \t%.2f\n");
-  s1.erase(s1.begin());
-  timeStamp("set1 \tfirst access: \t%.2f\n");
-  s1.erase(s1.begin());
-  timeStamp("set1 \tsecond access: \t%.2f\n");
-
 }

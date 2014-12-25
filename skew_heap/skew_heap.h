@@ -9,17 +9,15 @@ struct SNode {
 	SNode <T> * L;
 	SNode <T> * R;
 
-	SNode() {
-		L = R = 0;
-	}
 	SNode(T _val) { 
 		val = _val; 
 		L = R = 0;
 	}
 };
 
-template <class T, const T INF>
+template <class T>
 class SHeap {
+	friend class SkewHeapMergeBootInt;
 	SNode<T> * root;
 
 public:
@@ -69,35 +67,9 @@ public:
 		}
 	}
 
-	void clear() {
-		if(root)
-			clear(root);
-	}
-
-	void mergeWithHeap(SHeap<T,INF>& h){
+	void mergeWithHeap(SHeap<T>& h){
 		root = merge(root, h.root);
 		h.root = 0;
-	}
-
-	void add (T val) {
-		if(!root) 
-			root = new SNode<T>(val);
-		else 
-			root = merge(root, new SNode<T>(val));
-	}
-
-	T min (){
-		return root ? root->val : INF;
-	}
-
-	T extractMin (){
-		if(!root)
-			return INF;
-		T oldMin = root->val;
-		SNode<T> * oldRoot = root;
-		root = merge(oldRoot->L, oldRoot->R);
-		delete oldRoot;
-		return oldMin;
 	}
 
 	void print() {
@@ -108,15 +80,48 @@ public:
 		return checkMin(root);
 	}
 
+	void clear() {
+		if(root)
+			clear(root);
+		root = nullptr;
+	}
+
+	void add (T val) {
+		if(!root) 
+			root = new SNode<T>(val);
+		else 
+			root = merge(root, new SNode<T>(val));
+	}
+
+	T min (){
+		return root->val;
+	}
+
+	void pop(){
+		SNode<T> * oldRoot = root;
+		root = merge(oldRoot->L, oldRoot->R);
+		delete oldRoot;
+	}
+
+	bool empty() {
+		return root == nullptr;
+	}
+
+
 private:
 
-// --------------------------------------------------------------------------------
+
+	void clear(SNode<T> * n) {
+		if(n->L) clear(n->L);
+		if(n->R) clear(n->R);
+		delete n;
+	}
 
 	SNode<T> * merge (SNode<T> * a, SNode<T> * b) {  // returns pointer to the head of merged heap
 													 // if only one of nodes NOTNULL, returns it
 		if(!a || !b || a == b){
 			if(a && !b) return a;
-			if(a == b && a != 0) throw "NullPointerException";
+			if(a == b && a != 0) throw "attempt of self merge";
 			return b;
 		}
 		if(a->val > b->val)
@@ -125,18 +130,20 @@ private:
 			a->R = b;
 		else 
 			a->R = merge (a->R, b);
-		// if(!a->L || a->R->d > a->L->d)
 		std::swap(a->R, a->L);
-		// a->d = a->R ? a->R->d + 1 : 1;
+
 		return a;
 	}
 
 		void printSubtree(SNode<T>* n, int level) {
 		std::cout << std::string(level, ' ') << (n? n->val : 0) << ':' << (n? n->d : 0) << std::endl;
 		if(!n)
-			return;
-		printSubtree(n->L, level+1);
-		printSubtree(n->R, level+1);
+			std::cout << std::string(level, ' ') << "-" << std::endl;
+		else{
+			printSubtree(n->R, level+1);
+			std::cout << std::string(level, ' ') << (n? n->val : 0) << std::endl;
+			printSubtree(n->L, level+1);
+		}
 	}
 
 	bool checkMin(SNode<T>* n){
@@ -144,11 +151,6 @@ private:
 		return (n->L ? (n->val <= n->L->val && checkMin(n->L)) : true) &&
 				(n->R ? (n->val <= n->R->val && checkMin(n->R)) : true);
 	}
-	
-	void clear(SNode<T> * n) {
-		if(n->L) clear(n->L);
-		if(n->R) clear(n->R);
-		delete n;
-	}
-	
+
+
 };

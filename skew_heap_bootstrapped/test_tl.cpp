@@ -11,8 +11,8 @@ void gen( int n, std::vector <int> &a ) {
     a[i] = rand();
 }
 
-const int maxN = 1e5;
-SHeapBoot<int, INT_MAX> h;
+const int maxN = static_cast<int>(1e5);
+SHeapBoot<int> h;
 
 int main() {
   std::vector <int> x;
@@ -22,7 +22,7 @@ int main() {
     gen(n, x);
     h.build(x.begin(), x.end());
     forn(i, n)
-      h.extractMin();
+      h.pop();
     // test add
     gen(n, x);
     h.clear();

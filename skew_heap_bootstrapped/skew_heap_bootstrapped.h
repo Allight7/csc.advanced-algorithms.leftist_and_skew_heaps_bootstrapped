@@ -10,17 +10,15 @@ struct SNode {
 	SNode <T> * L;
 	SNode <T> * R;
 
-	SNode() {
-		L = R = 0;
-	}
 	SNode(T _val) { 
 		val = _val; 
 		L = R = 0;
 	}
 };
 
-template <class T, const T INF>
+template <class T>
 class SHeapBoot {
+	friend class SkewHeapMergeBootInt;
 	SNode<T> * root;
 	std::list<T> addition;
 
@@ -71,16 +69,27 @@ public:
 		}
 	}
 
+	void mergeWithHeap(SHeapBoot<T>& h){
+		addition.splice(addition.end(), h.addition);
+		root = merge(root, h.root);
+		h.root = 0;
+	}
+
+	void print() {
+		mergeAddition();
+		printSubtree(root,1);
+	}
+
+	bool checkMin(){
+		mergeAddition();
+		return checkMin(root);
+	}
+
 	void clear() {
 		addition.clear();
 		if(root)
 			clear(root);
-	}
-
-	void mergeWithHeap(SHeapBoot<T,INF>& h){
-		addition.splice(addition.end(), h.addition);
-		root = merge(root, h.root);
-		h.root = 0;
+		root = nullptr;
 	}
 
 	void add (T val) {
@@ -96,32 +105,30 @@ public:
 	}
 
 	T min (){
-		return root ? root->val : INF;
+		return root->val;
 	}
 
-	T extractMin (){
-		if(!root)
-			return INF;
+	void pop(){
 		if(!addition.empty())
 			mergeAddition();
-		T oldMin = root->val;
 		SNode<T> * oldRoot = root;
 		root = merge(oldRoot->L, oldRoot->R);
 		delete oldRoot;
-		return oldMin;
 	}
 
-	void print() {
-		printSubtree(root,1);
+	bool empty() {
+		return root == nullptr;
 	}
 
-	bool checkMin(){
-		return checkMin(root);
-	}
 
 private:
 
-// --------------------------------------------------------------------------------
+
+	void clear(SNode<T> * n) {
+		if(n->L) clear(n->L);
+		if(n->R) clear(n->R);
+		delete n;
+	}
 
 	SNode<T> * merge (SNode<T> * a, SNode<T> * b) {  // returns pointer to the head of merged heap
 													 // if only one of nodes NOTNULL, returns it
@@ -129,7 +136,7 @@ private:
 //			mergeAddition();
 		if(!a || !b || a == b){
 			if(a && !b) return a;
-			if(a == b && a != 0) throw "NullPointerException";
+			if(a == b && a != 0) throw "attempt of self merge";
 			return b;
 		}
 		if(a->val > b->val)
@@ -138,25 +145,25 @@ private:
 			a->R = b;
 		else 
 			a->R = merge (a->R, b);
-		// if(!a->L || a->R->d > a->L->d)
 		std::swap(a->R, a->L);
-		// a->d = a->R ? a->R->d + 1 : 1;
 		return a;
 	}
 
 	void mergeAddition(){
-		SHeapBoot<T,INF> h(addition.begin(), addition.end());
+		SHeapBoot<T> h(addition.begin(), addition.end());
 		addition.clear();
 		root = merge(root, h.root);
 		h.root = 0;
 	}
 
 	void printSubtree(SNode<T>* n, int level) {
-		std::cout << std::string(level, ' ') << (n? n->val : 0) << ':' << (n? n->d : 0) << std::endl;
 		if(!n)
-			return;
-		printSubtree(n->L, level+1);
-		printSubtree(n->R, level+1);
+			std::cout << std::string(level, ' ') << "-" << std::endl;
+		else{
+			printSubtree(n->R, level+1);
+			std::cout << std::string(level, ' ') << (n? n->val : 0) << std::endl;
+			printSubtree(n->L, level+1);
+		}
 	}
 
 	bool checkMin(SNode<T>* n){
@@ -164,11 +171,6 @@ private:
 		return (n->L ? (n->val <= n->L->val && checkMin(n->L)) : true) &&
 				(n->R ? (n->val <= n->R->val && checkMin(n->R)) : true);
 	}
-	
-	void clear(SNode<T> * n) {
-		if(n->L) clear(n->L);
-		if(n->R) clear(n->R);
-		delete n;
-	}
-	
+
+
 };
