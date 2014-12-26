@@ -16,7 +16,7 @@ void gen( int n, std::vector <int> &a ) {
     a[i] = R();
 }
 
-const int maxN = 1e5;
+const int maxN = 1e6;
 // LHeapBoot<unsigned, &i_max> h;
 
 
@@ -76,6 +76,9 @@ int main() {
   timeStamp("leftist_heap1 \tfirst access: \t%.2f\n");
   h1.pop();
   timeStamp("leftist_heap1 \tsecond access: \t%.2f\n");
+  while (!h1.empty())
+  h1.pop();     
+  timeStamp("leftist_heap1 \tfull extract: \t%.2f\n");
 
 
   std::priority_queue<int, std::vector<int>, std::greater<int>> q1;
@@ -91,6 +94,9 @@ int main() {
     q2.pop();
   }
   timeStamp("priority_queues\tmerged: \t%.2f\n");
+  while (!q1.empty())
+  q1.pop();     
+  timeStamp("priority_queue1 full extract: \t%.2f\n");
 
   std::multiset<int> s1;
   forn(i, n)
@@ -105,4 +111,7 @@ int main() {
     s2.erase(s2.begin());
   }
   timeStamp("sets \t\tmerged: \t%.2f\n");
+  while (!s1.empty())
+  s1.erase(s1.begin());
+  timeStamp("set1 \tfull extracted: \t%.2f\n");
 }

@@ -16,7 +16,7 @@ int main() {
   std::vector <int> x, ns(4);
   ns[0]=3;  ns[1]=5;  ns[2]=10; ns[3]=20;
   for (auto n : ns) // size of test
-    forn(t, 1000) { // number of tests
+    forn(t, 10000) { // number of tests
 
 	  // test add + min + pop
       gen(n, x);
