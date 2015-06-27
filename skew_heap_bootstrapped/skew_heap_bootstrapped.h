@@ -1,4 +1,4 @@
-#include <vector>
+#include <queue>
 #include <algorithm>
 #include <iostream>
 #include <list>
@@ -40,33 +40,23 @@ public:
 
 	template <class InputIterator>
 	void build(InputIterator first, InputIterator last) { // O(n)
-		clear();							//не очень элегантно, но хотелось обойтись без добавления в каждый узел инфы о его связях с родителем.	
-		std::vector<SNode<T> *> ptrs;
+		clear();
+		std::queue<SNode<T> *> ptrs;
 
 		while(first != last)
-			ptrs.push_back(new SNode<T>(*first++));
-		int size = ptrs.size();
-		ptrs.resize(size+1);
+			ptrs.push(new SNode<T>(*first++));
 		
-		
-		for(int i = size/2; i >= 0; i--){
-			int j = i;
-			while (j < size && ptrs[j]) {
-				int m = j, l = 2 * j + 1, r = l + 1;
-				if (l <= size && ptrs[l] && ptrs[l]->val < ptrs[m]->val) m = l;
-				if (r <= size && ptrs[r] && ptrs[r]->val < ptrs[m]->val) m = r;
-				if (m == j)
-					break;
-				std::swap(ptrs[m], ptrs[j]);
-				j = m;
-			}
+		SNode<T> * a;
+		SNode<T> * b;
+		while(ptrs.size() > 1){
+			a = ptrs.front();
+			ptrs.pop();
+			b = ptrs.front();
+			ptrs.pop();
+			ptrs.push(merge(a,b));
 		}
 
-		root = ptrs[0];
-		for(int i = 0; i < size/2; ++i){
-			ptrs[i]->L = ptrs[2*i+1];
-			ptrs[i]->R = ptrs[2*i+2];
-		}
+		root = ptrs.front();
 	}
 
 	void mergeWithHeap(SHeapBoot<T>& h){

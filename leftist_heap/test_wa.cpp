@@ -24,6 +24,7 @@ int main() {
       // test build + min
       gen(n, x);
       h.build(x.begin(),x.end());
+      //if(!t) h.print();
       forn(i, n) {
         auto it = min_element(x.begin(), x.end());
         assert(h.min() == *it);
