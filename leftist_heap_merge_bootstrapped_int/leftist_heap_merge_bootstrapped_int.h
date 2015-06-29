@@ -2,6 +2,9 @@
 #include <algorithm>
 #include <climits>
 
+#ifndef _LHEAP_MERGE_BOOT_
+#define _LHEAP_MERGE_BOOT_
+
 struct LeftistHeapMergeBootIntNode {
 	int min;
 	LHeapBoot <LeftistHeapMergeBootIntNode> * subheap;
@@ -122,5 +125,4 @@ private:
 	}
 };
 
-
-
+#endif

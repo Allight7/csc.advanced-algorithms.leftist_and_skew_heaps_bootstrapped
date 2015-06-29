@@ -3,6 +3,8 @@
 #include <iostream>
 #include <list>
 
+#ifndef _LNODE_
+#define _LNODE_
 template <class T>
 struct LNode {
 	int d;
@@ -16,6 +18,10 @@ struct LNode {
 		L = R = 0;
 	}
 };
+#endif
+
+#ifndef _LHEAP_BOOT_
+#define _LHEAP_BOOT_
 
 template <class T>
 class LHeapBoot {
@@ -165,3 +171,5 @@ private:
 
 
 };
+
+#endif

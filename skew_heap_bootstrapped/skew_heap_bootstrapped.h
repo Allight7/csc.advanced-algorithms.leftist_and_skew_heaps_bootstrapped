@@ -3,7 +3,8 @@
 #include <iostream>
 #include <list>
 
-
+#ifndef _SNODE_
+#define _SNODE_
 template <class T>
 struct SNode {
 	T val;
@@ -15,6 +16,11 @@ struct SNode {
 		L = R = 0;
 	}
 };
+#endif
+
+
+#ifndef _SHEAP_BOOT_
+#define _SHEAP_BOOT_
 
 template <class T>
 class SHeapBoot {
@@ -164,3 +170,5 @@ private:
 
 
 };
+
+#endif

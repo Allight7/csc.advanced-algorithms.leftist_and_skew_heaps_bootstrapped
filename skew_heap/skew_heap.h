@@ -2,7 +2,8 @@
 #include <algorithm>
 #include <iostream>
 
-
+#ifndef _SNODE_
+#define _SNODE_
 template <class T>
 struct SNode {
 	T val;
@@ -14,7 +15,11 @@ struct SNode {
 		L = R = 0;
 	}
 };
+#endif
 
+
+#ifndef _SHEAP_
+#define _SHEAP_
 template <class T>
 class SHeap {
 	friend class SkewHeapMergeBootInt;
@@ -144,3 +149,4 @@ private:
 
 
 };
+#endif

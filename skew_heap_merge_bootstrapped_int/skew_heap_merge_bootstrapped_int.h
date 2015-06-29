@@ -2,6 +2,10 @@
 #include <algorithm>
 #include <climits>
 
+
+#ifndef _SHEAP_MERGE_BOOT_
+#define _SHEAP_MERGE_BOOT_
+
 struct SkewHeapMergeBootIntNode {
 	int min;
 	SHeapBoot <SkewHeapMergeBootIntNode> * subheap;
@@ -122,5 +126,4 @@ private:
 	}
 };
 
-
-
+#endif

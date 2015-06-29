@@ -2,7 +2,8 @@
 #include <algorithm>
 #include <iostream>
 
-
+#ifndef _LNODE_
+#define _LNODE_
 template <class T>
 struct LNode {
 	int d;
@@ -16,6 +17,10 @@ struct LNode {
 		L = R = 0;
 	}
 };
+#endif
+
+#ifndef _LHEAP_
+#define _LHEAP_
 
 template <class T>
 class LHeap {
@@ -115,6 +120,11 @@ private:
 			if(a == b && a != 0) throw "attempt of self merge";
 			return b;
 		}
+		// Почему это работает хуже?
+		// if(!a) return b;
+		// if(!b) return a;
+		// if(a == b) throw "attempt of self merge";
+
 		if(a->val > b->val)
 			std::swap(a, b);
 		if(!a->R)
@@ -145,3 +155,5 @@ private:
 
 
 };
+
+#endif
