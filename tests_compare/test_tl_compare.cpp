@@ -32,23 +32,26 @@ int main() {
   // int n = HEAP_SIZE;
   // int k = HEAPS_NUM;
 
-  const int rounds = 1;
-  const int memoryCapacity = (int)1e7;
-  const int memoryMult = 3;
+  const int rounds          = 10;
+  const int memoryInit      = (int)1e4;
+  const int memoryCapacity  = (int)5e6;
+  const int memoryMult      = 2;
 
   double start = 0;
 
   forn(r,rounds){
-    fprintf(stderr, "\nr = %2d\t",r);
+    fprintf(stderr, "\nr = %2d\t",r+1);
+    fprintf(stdout, "\nr = %2d\t",r+1);
   
     forn(b,2){
-      int n = 1; //heap size;
-      int k = 1; //heaps num;
+      int n = 2; //heap size;
+      int k = 2; //heaps num;
       int * p = b ? &n : &k;
     
-      for(*p = (int)1e4; *p < memoryCapacity+1; *p *= memoryMult){
+      for(*p = memoryInit; *p < memoryCapacity+1; *p *= memoryMult){
         // fprintf(stderr, "============================================================\n");
         fprintf(stderr, "k = %8d\tn = %8d\t",k,n);
+        fprintf(stdout, "\n\tk = %8d\tn = %8d\t",k,n);
         std::vector <std::vector <int>> x(k);
         std::vector <LHeap<unsigned>>         hl(k);
         std::vector <LHeapBoot<unsigned>>     hla(k);
@@ -57,6 +60,7 @@ int main() {
         std::vector <SHeapBoot<unsigned>>     hsa(k);
         std::vector <SkewHeapMergeBootInt>    hsam(k);
         std::vector< std::priority_queue<int, std::vector<int>, std::greater<int>>> q(k);
+        std::vector<std::multiset<int>>       s(k);
 
         forn(i,k)
           gen(n,x[i]);
@@ -262,7 +266,6 @@ int main() {
         // fprintf(stderr, "\n\nset\n\n");
         fprintf(stderr, "|\tset\t");
 
-        std::vector<std::multiset<int>> s(k);
         forn(i, k)
           forn(j, n)
             s[i].insert(x[i][j]);
